@@ -1,2 +1,3 @@
-# romi-gallery-public
-ROMI — public read-only gallery. Content is published from the private ROMI editor.
+# ROMI public gallery
+
+Read-only ROMI gallery. Public website preparation is in progress.
