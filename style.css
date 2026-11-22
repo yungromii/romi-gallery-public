@@ -155,6 +155,8 @@ body:not(.is-home) .site-footer{display:none}
 @media(max-width:440px){.is-home .gallery{grid-template-columns:repeat(4,minmax(0,1fr))}.is-home .gallery>.tile:nth-child(n){margin-left:-7%}.is-home .gallery>.tile:nth-child(4n+1){margin-left:0}}
 /* Larger equal original-photo slots and explicit consent notices. */
 .originals-editorial .editorial-shot.is-original{aspect-ratio:1 / 1}
+/* Mobile photo grids must not inherit the old editorial position-based spans. */
+.look-originals .originals-editorial>.editorial-shot.is-original{grid-column:auto}
 .original-permission-note{display:flex;width:100%;aspect-ratio:1 / 1;align-items:center;justify-content:center;text-align:center;background:transparent}
 .original-permission-note p,.interview-status-note{font-size:.85rem;line-height:1.8;font-weight:400;color:#555;margin:0;word-break:keep-all}
 /* Daily / favorite / interview shown together in a dense board. */
