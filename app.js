@@ -73,7 +73,7 @@ function detail(id) {
   }[p.id];
   const interviewStatus=p.permissions?.interview;
   const interviewNotice=interviewStatus==='declined'?'인터뷰 참여 비동의로<br>진행하지 않았습니다.':interviewStatus==='pending'?'인터뷰 참여 여부 확인 중':'인터뷰 준비 중';
-  const interview=p.interview && interviewStatus!=='declined'
+  const interview=p.interviewHidden?'':p.interview && interviewStatus!=='declined'
     ? `<div class="interview-article"><header class="interview-intro">${interviewStyle?`<blockquote class="interview-lead">“${escapeHtml(interviewStyle.quote)}”</blockquote>`:''}</header><div class="interview-questions">${p.interview.items.map((item,i)=>`<section class="interview-qa"><h4><span class="question-mark" aria-hidden="true">Q.</span>${escapeHtml(item.question)}</h4>${item.answer.map(paragraph=>`<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${interviewStyle?.pull.after===i?`<blockquote class="interview-pull">“${escapeHtml(interviewStyle.pull.text)}”</blockquote>`:''}`).join('')}</div></div>`
     : `<p class="interview-status-note">${interviewNotice}</p>`;
   app.innerHTML=`<article class="detail detail-simultaneous"><div class="detail-nav"><a class="back-link" href="#/">← 전체 보기</a><h1>${escapeHtml(displayName(p))}</h1></div><div class="detail-board">${lookColumns}<aside class="interview-sidebar" aria-label="${escapeHtml(p.name)} 인터뷰"><div class="interview-sticky"><div class="interview-copy">${interview}</div></div></aside></div></article>`;

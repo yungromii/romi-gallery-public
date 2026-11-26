@@ -29,6 +29,7 @@ for p in people:
         assert not any(i.get('hoverOriginal') for i in p['images'])
         assert not any(o['originalFiles'] for o in p['outfits'])
     if p.get('permissions',{}).get('interview')=='declined':assert not p.get('interview')
+    if p.get('interviewHidden'):assert not p.get('interview'),'Hidden interview text in public payload'
 for file in required:
     assert re.fullmatch(r'[a-f0-9]{64}\.webp',file),'Invalid public image filename'
     assert hashlib.sha256((root/'assets'/file).read_bytes()).hexdigest()==Path(file).stem,('Missing/corrupt image',file)
