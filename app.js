@@ -18,7 +18,7 @@ function card(p, image, index) {
     : '';
   return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index + 1}번째 이미지"><div class="tile-inner"><div class="tile-face tile-front"><img src="${imageUrl(image.file)}" alt="${escapeHtml(p.name)} 로미 캐릭터 ${index + 1}" loading="lazy">${src?'':`<span class="tile-name">${escapeHtml(displayName(p))}</span>`}</div>${back}</div></a>`;
 }
-const hangerIcon = favorite => `<svg class="hanger-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6a2 2 0 1 1 3.4 1.4L14 9v2M14 11 3.1 18.5a1.1 1.1 0 0 0 .6 2h20.6a1.1 1.1 0 0 0 .6-2L14 11Z"/>${favorite?'<path class="hanger-heart" d="M14 22.3 10.9 19a2 2 0 0 1 3.1-2.5 2 2 0 0 1 3.1 2.5L14 22.3Z"/>':''}</svg>`;
+const categoryDot = category => `<span class="category-dot category-dot--${category}" aria-hidden="true"></span>`;
 function home() {
   const categories=[{id:'daily',label:'일상 코디'},{id:'favorite',label:'가장 마음에 드는 코디'}];
   if(!galleryOrder){
@@ -36,7 +36,7 @@ function home() {
     const picked=galleryPicks.get(p.id)[homeCategory];
     return picked?card(p,picked.image,picked.i):`<div class="tile tile-unavailable" data-person="${p.id}" aria-label="${escapeHtml(p.name)}: 이 분류의 코디 없음"></div>`;
   }).join('');
-  app.innerHTML=`<div class="gallery-wrap"><div class="home-tabs" role="tablist" aria-label="코디 분류">${categories.map(category=>`<button id="home-tab-${category.id}" type="button" role="tab" aria-selected="${homeCategory===category.id}" aria-controls="home-gallery" tabindex="${homeCategory===category.id?0:-1}" data-category="${category.id}" aria-label="${category.label}">${hangerIcon(category.id==='favorite')}</button>`).join('')}</div><div id="home-gallery" class="gallery" role="tabpanel" aria-labelledby="home-tab-${homeCategory}">${tiles}</div></div>`;
+  app.innerHTML=`<div class="gallery-wrap"><div class="home-tabs" role="tablist" aria-label="코디 분류">${categories.map(category=>`<button id="home-tab-${category.id}" type="button" role="tab" aria-selected="${homeCategory===category.id}" aria-controls="home-gallery" tabindex="${homeCategory===category.id?0:-1}" data-category="${category.id}" aria-label="${category.label}">${categoryDot(category.id)}</button>`).join('')}</div><div id="home-gallery" class="gallery" role="tabpanel" aria-labelledby="home-tab-${homeCategory}">${tiles}</div></div>`;
   const selectCategory=category=>{homeCategory=category;home();document.getElementById(`home-tab-${category}`).focus()};
   document.querySelectorAll('.home-tabs button').forEach((button,index)=>{
     button.addEventListener('click',()=>selectCategory(button.dataset.category));

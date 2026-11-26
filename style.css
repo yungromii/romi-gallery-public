@@ -188,13 +188,15 @@ body:not(.is-home) .site-footer{display:none}
 .detail-simultaneous .detail-nav{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin-bottom:18px}
 .detail-simultaneous .detail-nav .back-link{grid-column:1;grid-row:1;justify-self:start}
 .detail-simultaneous .detail-nav h1{grid-column:2;grid-row:1;text-align:center;justify-self:center;font-size:.85rem;line-height:1.5;font-weight:500}
-.home-tabs .hanger-icon{display:block;width:24px;height:24px;flex:none}
-.home-tabs .hanger-heart{fill:#fff}
+.home-tabs .category-dot{display:block;width:20px;height:20px;flex:none;border-radius:50%;opacity:.45;transition:opacity .15s}
+.home-tabs .category-dot--daily{background:#ff2b2b}
+.home-tabs .category-dot--favorite{background:#b5ff00}
+.home-tabs button[aria-selected="true"] .category-dot,.home-tabs button:hover .category-dot{opacity:1}
 /* Full-body bases use one large display frame, independent of file whitespace. */
 .look-generated .editorial-shot.is-base{width:100%;height:clamp(320px,58dvh,560px);display:flex;align-items:center;justify-content:center;background:transparent}
 .look-generated .editorial-shot.is-base img{width:100%;height:100%;object-fit:contain;aspect-ratio:auto}
 @media(max-width:680px){.look-generated .editorial-shot.is-base{height:clamp(260px,48dvh,420px)}}
-/* Floating hanger controls occupy no space in the gallery flow. */
+/* Floating category controls occupy no space in the gallery flow. */
 .is-home .gallery-wrap{padding-top:24px}
 .is-home .home-tabs{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:100;margin:0;padding:0;gap:28px;width:max-content;pointer-events:none;filter:drop-shadow(0 0 2px #fff)}
 .is-home .home-tabs button{pointer-events:auto}
