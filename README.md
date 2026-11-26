@@ -1,18 +1,20 @@
 # ROMI
 
-Public read-only ROMI gallery: https://yungromii.github.io/romi-gallery-public/
+Public read-only gallery: https://yungromii.github.io/romi-gallery-public/
 
-The private management website remains the editing source. The public website contains only the saved, visible images and interviews; it has no editing or save functionality. Hidden/deleted media and private Drive metadata are excluded from exported releases.
+Since 2026-11-26 this repository is the sole operating website. GitHub Pages publishes `main` from the repository root. The previous private management site is retained as an archive and is no longer the editing or release source. There are no public editing or save controls.
 
-## Updating this public copy
+## Maintenance
 
-Ask the maintaining chat to update both the private Site and this GitHub repository. Save any changes made in the private editor first. The maintainer exports the current visible release from the authenticated editor, then applies it here:
+Update this repository directly through the maintenance workspace. Its private `romi-maintenance/README.md` documents the preserved placements, source identity mapping and exclusion records. Never publish those private records. Existing hidden/deleted images must remain absent during Drive synchronization; only an explicit restoration request can reintroduce one.
+
+Keep the current public image order, outfit assignments, permissions and placements when updating unrelated content. Text-only changes should not replace image records. Edit frontend files here, without regenerating them from the archived management site. Change the JS/CSS query version in `index.html` when those files change.
+
+Before committing:
 
 ```sh
-python3 tools/apply-export.py /absolute/path/to/romi-public.zip
-git add .
-git commit -m "Update published ROMI gallery"
-git push origin main
+python3 tools/check-release.py
+git diff --stat
 ```
 
-GitHub Pages publishes the repository root on `main`. Private editor saves do not automatically change the public website. No account passwords, provider credentials or private editor database belong in this repository.
+Commit and push intended changes to `main`, then verify the live page. Git history retains previous releases. Never commit private Drive IDs/links, hidden-file inventories, credentials or editor database state. `tools/apply-export.py` intentionally rejects old management-site ZIPs to prevent accidental rollback of placements or exclusions.
