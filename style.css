@@ -188,7 +188,7 @@ body:not(.is-home) .site-footer{display:none}
 .detail-simultaneous .detail-nav{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin-bottom:18px}
 .detail-simultaneous .detail-nav .back-link{grid-column:1;grid-row:1;justify-self:start}
 .detail-simultaneous .detail-nav h1{grid-column:2;grid-row:1;text-align:center;justify-self:center;font-size:.85rem;line-height:1.5;font-weight:500}
-.home-tabs .category-dot{display:block;width:20px;height:20px;flex:none;border-radius:50%;opacity:.45;transition:opacity .15s}
+.home-tabs .category-dot{display:block;width:14px;height:14px;flex:none;border-radius:50%;opacity:.45;transition:opacity .15s}
 .home-tabs .category-dot--daily{background:#ff2b2b}
 .home-tabs .category-dot--favorite{background:#b5ff00}
 .home-tabs button[aria-selected="true"] .category-dot,.home-tabs button:hover .category-dot{opacity:1}
