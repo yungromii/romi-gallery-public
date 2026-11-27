@@ -228,3 +228,7 @@ body:not(.is-home) .site-footer{display:none}
 input,textarea,select{font-family:inherit}
 
 .tile-face>.landing-cutout{object-fit:contain;filter:none}
+
+.home-tabs .category-dot--temporary-all{background:#888}
+.tile.is-temporary-view .tile-back>.landing-uncropped{object-fit:contain;filter:none}
+@media(max-width:440px){.is-home .home-tabs{gap:16px}}
