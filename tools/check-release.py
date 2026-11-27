@@ -35,4 +35,24 @@ for file in required:
     assert hashlib.sha256((root/'assets'/file).read_bytes()).hexdigest()==Path(file).stem,('Missing/corrupt image',file)
 actual={p.name for p in (root/'assets').glob('*.webp')}
 assert actual==required,'Unreferenced or missing public image files'
+thumbnail_file=root/'landing-thumbnails.json'
+if thumbnail_file.exists():
+    thumbnails=json.loads(thumbnail_file.read_text())
+    private_check(thumbnails)
+    by_id={p['id']:p for p in people}; thumbnail_assets=set()
+    for person_id,categories in thumbnails['people'].items():
+        assert person_id in by_id,'Unknown thumbnail person'
+        assert by_id[person_id].get('permissions',{}).get('photo')!='denied','Nonconsenting thumbnail'
+        for category,images in categories.items():
+            assert category in {'daily','favorite'},'Unknown thumbnail category'
+            assert images,'Empty thumbnail selection'
+            for image in images:
+                assert set(image)=={'file','width','height'},'Unexpected thumbnail metadata'
+                file=image['file']
+                assert re.fullmatch(r'[a-f0-9]{64}\.webp',file),'Invalid thumbnail filename'
+                assert min(image['width'],image['height'])>0,'Invalid thumbnail dimensions'
+                assert hashlib.sha256((root/'thumbnails'/file).read_bytes()).hexdigest()==Path(file).stem,'Missing/corrupt thumbnail'
+                thumbnail_assets.add(file)
+    assert {p.name for p in (root/'thumbnails').glob('*.webp')}==thumbnail_assets,'Unreferenced thumbnail assets'
+    print(f'Valid landing cutouts: {len(thumbnails["people"])} people, {len(thumbnail_assets)} images.')
 print(f'Valid public release: {len(people)} people, {len(required)} images; consent, references and hashes verified.')

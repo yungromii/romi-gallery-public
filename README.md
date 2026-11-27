@@ -12,6 +12,8 @@ Keep the current public image order, outfit assignments, permissions and placeme
 
 The landing page has four paired tabs: red/lime show daily/favorite characters; blue/magenta show the corresponding approved original photos. Both views share the same chosen character, matching photo, person order and detail link. Original-photo views flip back to characters. Missing/unapproved photos retain an empty person slot. A fresh page load always starts on the red daily-character tab.
 
+Selected transparent cutouts are landing-only overrides in `landing-thumbnails.json`, with content-addressed WebP files in `thumbnails/`. Preserve these during gallery/Drive refreshes; they do not replace detail-page originals. Multiple selections in one person/outfit slot pick once per page load and remain consistent across paired tabs and hover flips. The private maintenance workspace retains source selection and edit provenance.
+
 Before committing:
 
 ```sh

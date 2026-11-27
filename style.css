@@ -226,3 +226,5 @@ body:not(.is-home) .site-footer{display:none}
 .tile.is-original-view .tile-back{background:#fff}
 
 input,textarea,select{font-family:inherit}
+
+.tile-face>.landing-cutout{object-fit:contain;filter:none}

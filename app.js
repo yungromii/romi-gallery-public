@@ -3,6 +3,16 @@ import {initialLayout} from './layout.js';
 const app=document.getElementById('app');let archive=null,galleryOrder=null;const editing=false,shotActions=()=>'',editedLayout=p=>initialLayout(p);
 let homeCategory = 'daily';
 let galleryPicks = null;
+let landingThumbnails = {};
+const landingThumbnailPicks = new Map();
+function selectedThumbnail(personId,category){
+  const key=personId+':'+category;
+  if(!landingThumbnailPicks.has(key)){
+    const options=landingThumbnails[personId]?.[category]||[];
+    landingThumbnailPicks.set(key,options.length?options[Math.floor(Math.random()*options.length)]:null);
+  }
+  return landingThumbnailPicks.get(key);
+}
 const gallerySettings = {randomOrder:false, randomOutfit:false};
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const imageUrl = f => './assets/' + f.split('/').map(encodeURIComponent).join('/');
@@ -18,10 +28,11 @@ const homeTabs = [
 ];
 function card(p, image, index, tab) {
   const originals=editedLayout(p)[tab.category+':original'];const matched=originals.includes(image.hoverOriginal?.file)?image.hoverOriginal.file:originals[0];
-  const src = p.permissions?.photo!=='denied'&&matched?imageUrl(matched):null;
+  const cutout=p.permissions?.photo!=='denied'?selectedThumbnail(p.id,tab.category):null;
+  const src = cutout?'./thumbnails/'+encodeURIComponent(cutout.file):p.permissions?.photo!=='denied'&&matched?imageUrl(matched):null;
   const name=`<span class="tile-name">${escapeHtml(displayName(p))}</span>`;
   const character=`<img src="${imageUrl(image.file)}" alt="${escapeHtml(p.name)} 로미 캐릭터 ${index+1}" loading="lazy">`;
-  const original=src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진','lazy','landing-original'):'';
+  const original=cutout?`<img class="landing-original landing-cutout" src="${src}" alt="${escapeHtml(p.name)} 원본 사진 누끼" loading="lazy" width="${cutout.width}" height="${cutout.height}">`:src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진','lazy','landing-original'):'';
   const front=tab.original?original+name:character+(src?'':name);
   const back=src?`<div class="tile-face tile-back">${tab.original?character:original}${name}</div>`:'';
   return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}${tab.original?' is-original-view':''}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index+1}번째 이미지${tab.original&&!src?', 공개된 원본 사진 없음':''}"><div class="tile-inner"><div class="tile-face tile-front">${front}</div>${back}</div></a>`;
@@ -90,4 +101,4 @@ function detail(id) {
 }
 
 function route(){if(!archive)return;const hash=decodeURIComponent(location.hash||'#/');document.body.classList.toggle('is-home',!hash.startsWith('#/person/'));if(hash.startsWith('#/person/'))detail(hash.split('/')[2]);else home();window.scrollTo({top:0,behavior:'instant'});}
-fetch('./gallery.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{archive=data.archive;route();window.addEventListener('hashchange',route);}).catch(()=>{app.innerHTML='<p style="padding:48px 24px">이미지 목록을 불러오지 못했습니다. 잠시 후 다시 방문해 주세요.</p>';});
+Promise.all([fetch('./gallery.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()}),fetch('./landing-thumbnails.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()})]).then(([data,thumbnails])=>{archive=data.archive;landingThumbnails=thumbnails.people||{};route();window.addEventListener('hashchange',route);}).catch(()=>{app.innerHTML='<p style="padding:48px 24px">이미지 목록을 불러오지 못했습니다. 잠시 후 다시 방문해 주세요.</p>';});
