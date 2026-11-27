@@ -24,3 +24,5 @@ git diff --stat
 Commit and push intended changes to `main`, then verify the live page. Git history retains previous releases. Never commit private Drive IDs/links, hidden-file inventories, credentials or editor database state. `tools/apply-export.py` intentionally rejects old management-site ZIPs to prevent accidental rollback of placements or exclusions.
 
 The temporary gray tab shows every visible basic full-body record in `people[].images`, across both outfits, shuffled once per page load. It excludes `extraPoses`, bypasses landing cutout overrides and display-crop viewports for hover originals, and contains the full available original image in its tile. Default entry remains the red daily tab.
+
+For recording, selecting the gray tab hides the dot controls until reload (which returns to red). Temporary tiles use buttons with detail navigation, avoiding browser link-address previews on hover. The four regular tabs retain links.

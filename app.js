@@ -37,7 +37,10 @@ function card(p, image, index, tab) {
   const original=tab.temporary&&src?`<img class="landing-original landing-uncropped" src="${src}" alt="${escapeHtml(p.name)} 원본 사진" loading="lazy">`:cutout?`<img class="landing-original landing-cutout" src="${src}" alt="${escapeHtml(p.name)} 원본 사진 누끼" loading="lazy" width="${cutout.width}" height="${cutout.height}">`:src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진','lazy','landing-original'):'';
   const front=tab.original?original+name:character+(src?'':name);
   const back=src?`<div class="tile-face tile-back">${tab.original?character:original}${name}</div>`:'';
-  return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}${tab.original?' is-original-view':''}${tab.temporary?' is-temporary-view':''}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index+1}번째 이미지${tab.original&&!src?', 공개된 원본 사진 없음':''}"><div class="tile-inner"><div class="tile-face tile-front">${front}</div>${back}</div></a>`;
+  const tag=tab.temporary?'button':'a';
+  const destination=`#/person/${p.id}/outfit/${index+1}`;
+  const action=tab.temporary?`type="button" data-detail="${destination}"`:`href="${destination}"`;
+  return `<${tag} data-person="${p.id}" class="tile ${src?'has-original':'no-original'}${tab.original?' is-original-view':''}${tab.temporary?' is-temporary-view':''}" ${action} aria-label="${escapeHtml(p.name)} 상세 페이지, ${index+1}번째 이미지${tab.original&&!src?', 공개된 원본 사진 없음':''}"><div class="tile-inner"><div class="tile-face tile-front">${front}</div>${back}</div></${tag}>`;
 }
 const categoryDot = category => `<span class="category-dot category-dot--${category}" aria-hidden="true"></span>`;
 function home() {
@@ -73,8 +76,11 @@ function home() {
       const picked=galleryPicks.get(p.id)[selectedTab.category];
       return picked?card(p,picked.image,picked.i,selectedTab):`<div class="tile tile-unavailable" data-person="${p.id}" aria-label="${escapeHtml(p.name)}: 이 분류의 코디 없음"></div>`;
     }).join('');
-  app.innerHTML=`<div class="gallery-wrap"><div class="home-tabs" role="tablist" aria-label="코디 분류">${categories.map(category=>`<button id="home-tab-${category.id}" type="button" role="tab" aria-selected="${homeCategory===category.id}" aria-controls="home-gallery" tabindex="${homeCategory===category.id?0:-1}" data-category="${category.id}" aria-label="${category.label}">${categoryDot(category.id)}</button>`).join('')}</div><div id="home-gallery" class="gallery" role="tabpanel" aria-labelledby="home-tab-${homeCategory}">${tiles}</div></div>`;
-  const selectCategory=category=>{homeCategory=category;home();document.getElementById(`home-tab-${category}`).focus()};
+  app.innerHTML=`<div class="gallery-wrap"><div class="home-tabs" ${selectedTab.temporary?'hidden':''} role="tablist" aria-label="코디 분류">${categories.map(category=>`<button id="home-tab-${category.id}" type="button" role="tab" aria-selected="${homeCategory===category.id}" aria-controls="home-gallery" tabindex="${homeCategory===category.id?0:-1}" data-category="${category.id}" aria-label="${category.label}">${categoryDot(category.id)}</button>`).join('')}</div><div id="home-gallery" class="gallery" role="tabpanel" aria-labelledby="home-tab-${homeCategory}">${tiles}</div></div>`;
+  document.querySelectorAll('button.tile[data-detail]').forEach(button=>{
+    button.addEventListener('click',()=>{location.hash=button.dataset.detail});
+  });
+  const selectCategory=category=>{homeCategory=category;home();if(category!=='temporary-all')document.getElementById(`home-tab-${category}`).focus()};
   document.querySelectorAll('.home-tabs button').forEach((button,index)=>{
     button.addEventListener('click',()=>selectCategory(button.dataset.category));
     button.addEventListener('keydown',event=>{

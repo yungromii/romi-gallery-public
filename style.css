@@ -232,3 +232,6 @@ input,textarea,select{font-family:inherit}
 .home-tabs .category-dot--temporary-all{background:#888}
 .tile.is-temporary-view .tile-back>.landing-uncropped{object-fit:contain;filter:none}
 @media(max-width:440px){.is-home .home-tabs{gap:16px}}
+
+.home-tabs[hidden]{display:none}
+button.tile{padding:0;border:0;background:#fff;color:inherit;font:inherit;text-align:inherit;cursor:pointer}
