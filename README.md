@@ -10,6 +10,8 @@ Update this repository directly through the maintenance workspace. Its private `
 
 Keep the current public image order, outfit assignments, permissions and placements when updating unrelated content. Text-only changes should not replace image records. Edit frontend files here, without regenerating them from the archived management site. Change the JS/CSS query version in `index.html` when those files change.
 
+The landing page has four paired tabs: red/lime show daily/favorite characters; blue/magenta show the corresponding approved original photos. Both views share the same chosen character, matching photo, person order and detail link. Original-photo views flip back to characters. Missing/unapproved photos retain an empty person slot. A fresh page load always starts on the red daily-character tab.
+
 Before committing:
 
 ```sh

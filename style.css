@@ -191,6 +191,10 @@ body:not(.is-home) .site-footer{display:none}
 .home-tabs .category-dot{display:block;width:14px;height:14px;flex:none;border-radius:50%;opacity:.45;transition:opacity .15s}
 .home-tabs .category-dot--daily{background:#ff2b2b}
 .home-tabs .category-dot--favorite{background:#b5ff00}
+.home-tabs .category-dot--original-daily{background:#0066ff}
+.home-tabs .category-dot--original-favorite{background:#ff00ff}
+.tile.is-original-view .tile-back img{filter:none}
+.tile.is-original-view .tile-front>.cropped-photo{width:100%;height:100%}
 .home-tabs button[aria-selected="true"] .category-dot,.home-tabs button:hover .category-dot{opacity:1}
 /* Full-body bases use one large display frame, independent of file whitespace. */
 .look-generated .editorial-shot.is-base{width:100%;height:clamp(320px,58dvh,560px);display:flex;align-items:center;justify-content:center;background:transparent}

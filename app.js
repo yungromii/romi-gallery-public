@@ -10,31 +10,40 @@ const displayName = p => p.name.replace(' / nii',' / nii');
 const mediaForFile=(p,file)=>[...(p.originalPhotos||[]),...p.images.flatMap(i=>[i,i.detailImage].filter(Boolean)),...(p.extraPoses||[])].find(i=>i.file===file)||{file};
 const photo = image => image.hoverOriginal ? imageUrl(image.hoverOriginal.file) : null;
 const plural = (n) => String(n).padStart(2,'0');
-function card(p, image, index) {
-  const originals=editedLayout(p)[homeCategory+':original'];const matched=originals.includes(image.hoverOriginal?.file)?image.hoverOriginal.file:originals[0];
+const homeTabs = [
+  {id:'daily',category:'daily',label:'일상 코디'},
+  {id:'favorite',category:'favorite',label:'가장 마음에 드는 코디'},
+  {id:'original-daily',category:'daily',original:true,label:'일상 코디 원본 사진'},
+  {id:'original-favorite',category:'favorite',original:true,label:'가장 마음에 드는 코디 원본 사진'},
+];
+function card(p, image, index, tab) {
+  const originals=editedLayout(p)[tab.category+':original'];const matched=originals.includes(image.hoverOriginal?.file)?image.hoverOriginal.file:originals[0];
   const src = p.permissions?.photo!=='denied'&&matched?imageUrl(matched):null;
-  const back = src
-    ? `<div class="tile-face tile-back">${photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진')}<span class="tile-name">${escapeHtml(displayName(p))}</span></div>`
-    : '';
-  return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index + 1}번째 이미지"><div class="tile-inner"><div class="tile-face tile-front"><img src="${imageUrl(image.file)}" alt="${escapeHtml(p.name)} 로미 캐릭터 ${index + 1}" loading="lazy">${src?'':`<span class="tile-name">${escapeHtml(displayName(p))}</span>`}</div>${back}</div></a>`;
+  const name=`<span class="tile-name">${escapeHtml(displayName(p))}</span>`;
+  const character=`<img src="${imageUrl(image.file)}" alt="${escapeHtml(p.name)} 로미 캐릭터 ${index+1}" loading="lazy">`;
+  const original=src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진'):'';
+  const front=tab.original?original+name:character+(src?'':name);
+  const back=src?`<div class="tile-face tile-back">${tab.original?character:original}${name}</div>`:'';
+  return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}${tab.original?' is-original-view':''}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index+1}번째 이미지${tab.original&&!src?', 공개된 원본 사진 없음':''}"><div class="tile-inner"><div class="tile-face tile-front">${front}</div>${back}</div></a>`;
 }
 const categoryDot = category => `<span class="category-dot category-dot--${category}" aria-hidden="true"></span>`;
 function home() {
-  const categories=[{id:'daily',label:'일상 코디'},{id:'favorite',label:'가장 마음에 드는 코디'}];
+  const categories=homeTabs;
+  const selectedTab=categories.find(tab=>tab.id===homeCategory);
   if(!galleryOrder){
     galleryOrder=[...archive.people].sort((a,b)=>Number(a.id)-Number(b.id));
     if(gallerySettings.randomOrder)for(let i=galleryOrder.length-1;i>0;i--){
       const j=Math.floor(Math.random()*(i+1));
       [galleryOrder[i],galleryOrder[j]]=[galleryOrder[j],galleryOrder[i]];
     }
-    galleryPicks=new Map(galleryOrder.map(p=>[p.id,Object.fromEntries(categories.map(category=>{
+    galleryPicks=new Map(galleryOrder.map(p=>[p.id,Object.fromEntries(categories.filter(tab=>!tab.original).map(category=>{
       const slots=editedLayout(p);const choices=p.images.map((image,i)=>({image,i})).filter(item=>slots[category.id+':generated'].includes((item.image.detailImage||item.image).file)).sort((a,b)=>slots[category.id+':generated'].indexOf((a.image.detailImage||a.image).file)-slots[category.id+':generated'].indexOf((b.image.detailImage||b.image).file));
       return [category.id,choices.length?(gallerySettings.randomOutfit?choices[Math.floor(Math.random()*choices.length)]:choices[0]):null];
     }))]));
   }
   const tiles=galleryOrder.map(p=>{
-    const picked=galleryPicks.get(p.id)[homeCategory];
-    return picked?card(p,picked.image,picked.i):`<div class="tile tile-unavailable" data-person="${p.id}" aria-label="${escapeHtml(p.name)}: 이 분류의 코디 없음"></div>`;
+    const picked=galleryPicks.get(p.id)[selectedTab.category];
+    return picked?card(p,picked.image,picked.i,selectedTab):`<div class="tile tile-unavailable" data-person="${p.id}" aria-label="${escapeHtml(p.name)}: 이 분류의 코디 없음"></div>`;
   }).join('');
   app.innerHTML=`<div class="gallery-wrap"><div class="home-tabs" role="tablist" aria-label="코디 분류">${categories.map(category=>`<button id="home-tab-${category.id}" type="button" role="tab" aria-selected="${homeCategory===category.id}" aria-controls="home-gallery" tabindex="${homeCategory===category.id?0:-1}" data-category="${category.id}" aria-label="${category.label}">${categoryDot(category.id)}</button>`).join('')}</div><div id="home-gallery" class="gallery" role="tabpanel" aria-labelledby="home-tab-${homeCategory}">${tiles}</div></div>`;
   const selectCategory=category=>{homeCategory=category;home();document.getElementById(`home-tab-${category}`).focus()};
@@ -43,7 +52,7 @@ function home() {
     button.addEventListener('keydown',event=>{
       if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
       event.preventDefault();
-      const next=event.key==='Home'?0:event.key==='End'?1:1-index;
+      const next=event.key==='Home'?0:event.key==='End'?categories.length-1:(index+(event.key==='ArrowRight'?1:-1)+categories.length)%categories.length;
       selectCategory(categories[next].id);
     });
   });
