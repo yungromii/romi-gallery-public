@@ -21,7 +21,7 @@ function card(p, image, index, tab) {
   const src = p.permissions?.photo!=='denied'&&matched?imageUrl(matched):null;
   const name=`<span class="tile-name">${escapeHtml(displayName(p))}</span>`;
   const character=`<img src="${imageUrl(image.file)}" alt="${escapeHtml(p.name)} 로미 캐릭터 ${index+1}" loading="lazy">`;
-  const original=src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진'):'';
+  const original=src?photoMarkup(mediaForFile(p,matched),p.name+'의 원본 사진','lazy','landing-original'):'';
   const front=tab.original?original+name:character+(src?'':name);
   const back=src?`<div class="tile-face tile-back">${tab.original?character:original}${name}</div>`:'';
   return `<a data-person="${p.id}" class="tile ${src?'has-original':'no-original'}${tab.original?' is-original-view':''}" href="#/person/${p.id}/outfit/${index+1}" aria-label="${escapeHtml(p.name)} 상세 페이지, ${index+1}번째 이미지${tab.original&&!src?', 공개된 원본 사진 없음':''}"><div class="tile-inner"><div class="tile-face tile-front">${front}</div>${back}</div></a>`;
