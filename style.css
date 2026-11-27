@@ -1,3 +1,4 @@
+@font-face{font-family:'SM3 Naru';src:url('./fonts/sm3-naru-03.otf') format('opentype');font-weight:600 900;font-style:normal;font-display:swap}
 @font-face{font-family:'SM3 Naru';src:url('./fonts/sm3-naru-02.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
 :root{font-family:'SM3 Naru',sans-serif;color:#191919;background:#f5f4f0;font-synthesis:none}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px}a{color:inherit;text-decoration:none}button{font:inherit}img{display:block;max-width:100%}
