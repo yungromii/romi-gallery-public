@@ -235,3 +235,5 @@ input,textarea,select{font-family:inherit}
 
 .home-tabs[hidden]{display:none}
 button.tile{padding:0;border:0;background:#fff;color:inherit;font:inherit;text-align:inherit;cursor:pointer}
+
+.tile.is-temporary-view .tile-name{display:none}
